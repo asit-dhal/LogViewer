@@ -10,12 +10,25 @@ struct LogRecord
     QDateTime timestamp;
 	QString threadId;
     QString logLevel;
+	QString category;
+	QString filename;
+	QString lineNumber;
     QString message;
 };
 
 class LogModel : public QAbstractTableModel
 {
  Q_OBJECT
+    enum FieldName {
+        eTimestamp = 0,
+        eThreadId,
+        eLogLevel,
+        eCategory,
+        eFileName,
+        eLineNumber,
+        eMessage
+    };
+
 public:
     explicit LogModel(QObject* parent = nullptr);
     void addLogRecord(const LogRecord &record);

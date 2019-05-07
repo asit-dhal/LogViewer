@@ -30,6 +30,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->reCheckBox, &QCheckBox::stateChanged, [this](int state) {
        m_searchLogModel->onRegularExpressionEnabled(state == Qt::CheckState::Checked);
     });
+
+    connect(ui->searchLineEdit, &QLineEdit::returnPressed, [this]() { emit ui->searchPushButton->click();});
     connect(ui->searchPushButton, &QPushButton::clicked, [this]() {
         m_searchLogModel->onSearchButtonClicked(ui->searchLineEdit->text().trimmed());
     });
@@ -93,6 +95,14 @@ void MainWindow::processPendingDatagrams()
         tokens.pop_front();
         rec.logLevel = tokens.front();
         tokens.pop_front();
+
+		rec.category = tokens.front();
+		tokens.pop_front();
+		rec.filename = tokens.front();
+		tokens.pop_front();
+		rec.lineNumber = tokens.front();
+		tokens.pop_front();
+		
         rec.message = tokens.join(',');
         m_logModel->addLogRecord(rec);
     }

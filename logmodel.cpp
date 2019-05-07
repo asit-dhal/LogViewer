@@ -27,23 +27,41 @@ void LogModel::clear()
 
 QVariant LogModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (role != Qt::DisplayRole) {
-        return QVariant();
-    }
+    if (role == Qt::DisplayRole) {
+        if (orientation == Qt::Horizontal) {
+            switch (section) {
+            case FieldName::eTimestamp: return tr("Timestamp");
+            case FieldName::eThreadId: return tr("Thread Id");
+            case FieldName::eLogLevel: return tr("Log Level");
+            case FieldName::eCategory: return tr("Category");
+            case FieldName::eFileName: return tr("Filename");
+            case FieldName::eLineNumber: return tr("Line Number");
+            case FieldName::eMessage: return tr("Payload");
+            default:
+                return QVariant();
+            }
+        }
 
-    if (orientation == Qt::Horizontal) {
-        switch (section) {
-        case 0: return QString("Timestamp");
-		case 1: return QString("Thread Id");
-        case 2: return QString("Log Level");
-        case 3: return QString("Payload");
-        default:
-            return QVariant();
+        if (orientation == Qt::Vertical) {
+            return QString("%1").arg(section + 1);
         }
     }
 
-    if (orientation == Qt::Vertical) {
-        return QString("%1").arg(section + 1);
+    if (role == Qt::TextAlignmentRole) {
+        if (orientation == Qt::Horizontal) {
+            switch (section) {
+                case FieldName::eTimestamp: return QVariant(Qt::AlignCenter | Qt::AlignVCenter);;
+                case FieldName::eThreadId:  return QVariant(Qt::AlignCenter | Qt::AlignVCenter);;
+                case FieldName::eLogLevel:  return QVariant(Qt::AlignLeft | Qt::AlignVCenter);;
+                case FieldName::eCategory:  return QVariant(Qt::AlignLeft | Qt::AlignVCenter);;
+                case FieldName::eFileName:  return QVariant(Qt::AlignLeft | Qt::AlignVCenter);;
+                case FieldName::eLineNumber: return QVariant(Qt::AlignRight | Qt::AlignVCenter);;
+                case FieldName::eMessage:  return QVariant(Qt::AlignLeft | Qt::AlignVCenter);;
+                default: return QVariant();
+            }
+        }
+
+        return QVariant();
     }
 
     return QVariant();
@@ -58,7 +76,7 @@ int LogModel::rowCount(const QModelIndex& parent) const
 int LogModel::columnCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
-    return 4;
+    return 7;
 }
 
 QVariant LogModel::data(const QModelIndex& index, int role) const
@@ -71,10 +89,26 @@ QVariant LogModel::data(const QModelIndex& index, int role) const
 
     if (role == Qt::DisplayRole) {
         switch (index.column()) {
-            case 0: return m_records[index.row()].timestamp;
-			case 1: return m_records[index.row()].threadId;
-            case 2: return m_records[index.row()].logLevel;
-            case 3: return m_records[index.row()].message;
+            case FieldName::eTimestamp: return m_records[index.row()].timestamp;
+            case FieldName::eThreadId: return m_records[index.row()].threadId;
+            case FieldName::eLogLevel: return m_records[index.row()].logLevel;
+            case FieldName::eCategory: return m_records[index.row()].category;
+            case FieldName::eFileName: return m_records[index.row()].filename;
+            case FieldName::eLineNumber: return m_records[index.row()].lineNumber;
+            case FieldName::eMessage: return m_records[index.row()].message;
+			default: return QVariant();
+        }
+    }
+
+    if (role == Qt::TextAlignmentRole) {
+        switch (index.column()) {
+            case FieldName::eTimestamp: return QVariant(Qt::AlignCenter | Qt::AlignVCenter);;
+            case FieldName::eThreadId:  return QVariant(Qt::AlignCenter | Qt::AlignVCenter);;
+            case FieldName::eLogLevel:  return QVariant(Qt::AlignLeft | Qt::AlignVCenter);;
+            case FieldName::eCategory:  return QVariant(Qt::AlignLeft | Qt::AlignVCenter);;
+            case FieldName::eFileName:  return QVariant(Qt::AlignLeft | Qt::AlignVCenter);;
+            case FieldName::eLineNumber: return QVariant(Qt::AlignRight | Qt::AlignVCenter);;
+            case FieldName::eMessage:  return QVariant(Qt::AlignLeft | Qt::AlignVCenter);;
             default: return QVariant();
         }
     }
