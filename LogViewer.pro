@@ -28,15 +28,18 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     logmodel.cpp \
-    searchlogmodel.cpp
+    searchlogmodel.cpp \
+    settingsdialog.cpp
 
 HEADERS += \
         mainwindow.h \
     logmodel.h \
-    searchlogmodel.h
+    searchlogmodel.h \
+    settingsdialog.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    settingsdialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

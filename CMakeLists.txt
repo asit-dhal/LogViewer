@@ -36,9 +36,11 @@ set(SRCS
     mainwindow.cpp
     logmodel.cpp
     searchlogmodel.cpp
+    settingsdialog.cpp
 )
 set(UIS
     mainwindow.ui
+    settingsdialog.ui
 )
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)

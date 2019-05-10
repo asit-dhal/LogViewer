@@ -1,4 +1,5 @@
 #include "searchlogmodel.h"
+#include <QDebug>
 
 SearchLogModel::SearchLogModel(QObject *parent) : QSortFilterProxyModel(parent)
 {
@@ -11,6 +12,7 @@ void SearchLogModel::onRegularExpressionEnabled(bool enabled)
 
 void SearchLogModel::onSearchButtonClicked(const QString searchString)
 {
+    qDebug() << "re: " << searchString;
     setFilterRegExp(searchString);
 }
 

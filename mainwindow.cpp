@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "logmodel.h"
 #include "searchlogmodel.h"
+#include "settingsdialog.h"
 #include <QAbstractItemView>
 
 #include <QAction>
@@ -15,10 +16,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     m_logModel = new LogModel(this);
     m_searchLogModel = new SearchLogModel(this);
+    m_settingsDialog = new SettingsDialog(this);
 
     ui->logTableView->setModel(m_logModel);
-    ui->logTableView->horizontalHeader()->setStretchLastSection(true);
     ui->logTableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->logTableView->horizontalHeader()->setContextMenuPolicy(Qt::CustomContextMenu);
+    ui->logTableView->horizontalHeader()->setStretchLastSection(true);
+    connect(ui->logTableView->horizontalHeader(), &QTableView::customContextMenuRequested,
+            this, &MainWindow::onLogTableHeaderContextMenuRequested);
 
     m_searchLogModel->setSourceModel(m_logModel);
     ui->searchTableView->setModel(m_searchLogModel);
@@ -51,6 +56,8 @@ void MainWindow::createActions()
 
     m_clearAction = ui->mainToolBar->addAction(tr("Clear"));
     connect(m_clearAction, &QAction::triggered, [this]() { m_logModel->clear();});
+
+    connect(ui->actionSettings, &QAction::triggered, this, &MainWindow::onSettingsAction);
 }
 
 void MainWindow::onConnectDisconnectActionTriggered(bool checked)
@@ -85,6 +92,7 @@ void MainWindow::processPendingDatagrams()
     while (m_udpSocket->hasPendingDatagrams()) {
         auto packSize = static_cast<int>(m_udpSocket->pendingDatagramSize());
         datagram.resize(packSize);
+        ui->statusBar->showMessage(tr("Data received %1 bytes").arg(datagram.size()));
         m_udpSocket->readDatagram(datagram.data(), datagram.size());
 
         QStringList tokens = QString(datagram.constData()).split(",");
@@ -106,4 +114,49 @@ void MainWindow::processPendingDatagrams()
         rec.message = tokens.join(',');
         m_logModel->addLogRecord(rec);
     }
+}
+
+void MainWindow::onSettingsAction()
+{
+    m_settingsDialog->exec();
+}
+
+void MainWindow::onLogTableHeaderContextMenuRequested(const QPoint &p)
+{
+    QMenu *menu = new QMenu(this);
+    bool atleastOneHidden = false;
+
+    for(int i=0; i< m_logModel->columnCount(); i++) {
+        bool isHidden = ui->logTableView->isColumnHidden(i);
+        QString displayText = QString("%1 %2")
+                .arg(isHidden ? "Show" : "Hide")
+                .arg(m_logModel->headerData(i, Qt::Horizontal, Qt::DisplayRole).toString());
+        auto actionLambda = [&, isHidden, index=i]() {
+            if (isHidden)
+                ui->logTableView->showColumn(index);
+            else
+                ui->logTableView->hideColumn(index);
+        };
+        QAction  *act = new QAction(displayText, this);
+        act->setCheckable(true);
+        act->setChecked(!isHidden);
+        connect(act, &QAction::triggered, actionLambda);
+        menu->addAction(act);
+        atleastOneHidden |= isHidden;
+    }
+
+    if (atleastOneHidden) {
+        menu->addSeparator();
+        QAction  *act = new QAction(tr("Show All"), this);
+        connect(act, &QAction::triggered, [&]() {
+            for(int i=0; i< m_logModel->columnCount(); i++) {
+                if (ui->logTableView->isColumnHidden(i)) {
+                    ui->logTableView->showColumn(i);
+                }
+            }
+        });
+        menu->addAction(act);
+    }
+
+    menu->popup(ui->logTableView->horizontalHeader()->viewport()->mapToGlobal(p));
 }

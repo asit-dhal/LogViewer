@@ -7,6 +7,7 @@ class LogModel;
 class SearchLogModel;
 class QUdpSocket;
 class QAction;
+class SettingsDialog;
 
 namespace Ui {
 class MainWindow;
@@ -23,12 +24,15 @@ public:
 private:
     void createActions();
     void onConnectDisconnectActionTriggered(bool checked);
+    void onLogTableHeaderContextMenuRequested(const QPoint &p);
+    void onSettingsAction();
     void processPendingDatagrams();
 
     void connectToRemote();
     void disconnectFromRemote();
 
     Ui::MainWindow *ui;
+    SettingsDialog *m_settingsDialog = nullptr;
     LogModel *m_logModel = nullptr;
     SearchLogModel *m_searchLogModel = nullptr;
     QUdpSocket *m_udpSocket = nullptr;
