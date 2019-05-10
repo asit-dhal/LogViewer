@@ -28,6 +28,7 @@ private:
     void onSettingsAction();
     void processPendingDatagrams();
 
+    void scrollToBottomLogTable();
     void connectToRemote();
     void disconnectFromRemote();
 
@@ -36,6 +37,7 @@ private:
     LogModel *m_logModel = nullptr;
     SearchLogModel *m_searchLogModel = nullptr;
     QUdpSocket *m_udpSocket = nullptr;
+    int m_receivedDataSize = 0;
 
     QAction *m_startStopRecording;
     QAction *m_clearAction;

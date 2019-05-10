@@ -40,6 +40,17 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->searchPushButton, &QPushButton::clicked, [this]() {
         m_searchLogModel->onSearchButtonClicked(ui->searchLineEdit->text().trimmed());
     });
+
+    connect(ui->autoScrollPushButton, &QPushButton::clicked, [this](bool checked) {
+        if (checked) {
+            connect(m_logModel, &LogModel::rowsInserted, this, &MainWindow::scrollToBottomLogTable);
+            connect(m_logModel, &LogModel::modelReset, this, &MainWindow::scrollToBottomLogTable);
+        } else {
+            disconnect(m_logModel, &LogModel::rowsInserted, this, &MainWindow::scrollToBottomLogTable);
+            disconnect(m_logModel, &LogModel::modelReset, this, &MainWindow::scrollToBottomLogTable);
+
+        }
+    });
 }
 
 MainWindow::~MainWindow()
@@ -84,6 +95,7 @@ void MainWindow::connectToRemote()
 void MainWindow::disconnectFromRemote()
 {
     m_udpSocket->close();
+    m_receivedDataSize = 0;
 }
 
 void MainWindow::processPendingDatagrams()
@@ -92,7 +104,8 @@ void MainWindow::processPendingDatagrams()
     while (m_udpSocket->hasPendingDatagrams()) {
         auto packSize = static_cast<int>(m_udpSocket->pendingDatagramSize());
         datagram.resize(packSize);
-        ui->statusBar->showMessage(tr("Data received %1 bytes").arg(datagram.size()));
+        m_receivedDataSize += packSize;
+        ui->statusBar->showMessage(tr("Data received %1 bytes").arg(m_receivedDataSize));
         m_udpSocket->readDatagram(datagram.data(), datagram.size());
 
         QStringList tokens = QString(datagram.constData()).split(",");
@@ -159,4 +172,10 @@ void MainWindow::onLogTableHeaderContextMenuRequested(const QPoint &p)
     }
 
     menu->popup(ui->logTableView->horizontalHeader()->viewport()->mapToGlobal(p));
+}
+
+
+void MainWindow::scrollToBottomLogTable()
+{
+    ui->logTableView->scrollToBottom();
 }
