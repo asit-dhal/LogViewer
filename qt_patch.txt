@@ -1,0 +1,47 @@
+#include <QUdpSocket>
+
+void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+    static QUdpSocket *udpSocket = nullptr;
+    if (!udpSocket) {
+        udpSocket = new QUdpSocket();
+    }
+    QString buffer;
+    buffer += QString::number(QDateTime::currentMSecsSinceEpoch());
+    buffer +=",";
+    buffer += QString::number((long long)QThread::currentThreadId(), 16);
+    buffer +=",";
+
+    switch (type) {
+    case QtDebugMsg:
+        buffer += "Debug,";
+        break;
+    case QtInfoMsg:
+        buffer += "Info,";
+        break;
+    case QtWarningMsg:
+        buffer += "Warn,";
+        break;
+    case QtCriticalMsg:
+        buffer += "Critical,";
+        break;
+    case QtFatalMsg:
+        buffer += "Fatal,";
+        abort();
+    }
+
+    buffer += QString::fromUtf8(context.category) + ",";
+    buffer += QString::fromUtf8(context.file) + ",";
+    buffer += QString::number(context.line) + ",";
+
+    buffer += msg;
+    udpSocket->writeDatagram(buffer.toUtf8(), QHostAddress::Broadcast, 30000);
+}
+
+main()
+{
+	qInstallMessageHandler(myMessageOutput);
+
+    qDebug("Started");
+
+    }
