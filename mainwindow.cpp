@@ -40,6 +40,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->searchPushButton, &QPushButton::clicked, [this]() {
         m_searchLogModel->onSearchButtonClicked(ui->searchLineEdit->text().trimmed());
     });
+    connect(ui->caseSensitiveCheckBox, &QCheckBox::stateChanged, [this] (int state) {
+        m_searchLogModel->onCaseSensitiveClicked(state == Qt::Checked);
+    });
 
     connect(ui->autoScrollPushButton, &QPushButton::clicked, [this](bool checked) {
         if (checked) {

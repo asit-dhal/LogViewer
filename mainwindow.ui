@@ -28,6 +28,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QCheckBox" name="caseSensitiveCheckBox">
+        <property name="text">
+         <string>Case Sensitive</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QCheckBox" name="reCheckBox">
         <property name="text">
          <string>Enable RE</string>
