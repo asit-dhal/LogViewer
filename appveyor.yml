@@ -1,0 +1,73 @@
+# Copyright (c) 2019 Asit Dhal
+# Distributed under the MIT License (http://opensource.org/licenses/MIT)
+
+version: 0.0.1-{build}
+
+configuration:
+  - Release
+  - Debug
+
+image:
+  - Visual Studio 2017
+
+platform: 
+  - x64
+
+branches:
+  only:
+    - master
+
+matrix:
+  fast_finish: false
+
+environment:
+  matrix:
+    - CMAKE_BUILD_SYS: True
+    - QMAKE_BUILD_SYS: True
+
+install:
+    - ps: | 
+        $qt_path="C:\Qt\5.10.1\msvc2017_64\bin"
+        $mingw_path="C:\MinGW\bin"
+        $env:Path+=";" + $qt_path +";" + $mingw_path
+        cmd.exe /c "call `"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat`" && set > %temp%\vcvars.txt"
+        
+        Get-Content "$env:temp\vcvars.txt" | Foreach-Object {
+          if ($_ -match "^(.*?)=(.*)$") {
+            Set-Content "env:\$($matches[1])" $matches[2]
+          }
+        }
+
+build:
+  parallel: true  
+
+build_script:
+    - ps: $env:BUILD_PATH=$env:APPVEYOR_BUILD_FOLDER + "\build_" + $env:platform
+    - mkdir %BUILD_PATH%
+    - cd %BUILD_PATH%
+    - if "%CMAKE_BUILD_SYS%" == "True" (
+        cmake %APPVEYOR_BUILD_FOLDER% -G "Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=%configuration%
+      ) else (
+        qmake %APPVEYOR_BUILD_FOLDER%\LogViewer.pro CONFIG+=%configuration% DESTDIR=%cd%
+      ) 
+
+    - if "%CMAKE_BUILD_SYS%" == "True" (
+        cmake --build . --config %configuration% 
+      ) else (
+        nmake 
+      )
+
+after_build:
+    - if "%CMAKE_BUILD_SYS%" == "True" (
+        windeployqt  %BUILD_PATH%\bin\%configuration%\LogViewer.exe &&
+        7z a %APPVEYOR_BUILD_FOLDER%\LogViewer.7z %BUILD_PATH%\bin\%configuration%\*
+      ) else (
+        mkdir %BUILD_PATH%\bin  &&
+        copy %BUILD_PATH%\LogViewer.exe %BUILD_PATH%\bin &&
+        windeployqt  %BUILD_PATH%\bin\LogViewer.exe &&
+        7z a %APPVEYOR_BUILD_FOLDER%\LogViewer.7z %BUILD_PATH%\bin\*
+      )
+
+artifacts:
+  - path: LogViewer.7z
+    name: LogViewer
