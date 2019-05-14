@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>   
+<application>
+	<global-config>
+		<port>30000</port>
+		<hostname>broadcast</hostname>
+    </global-config>
+    <log-format>
+    	<field index="0">
+	    		<name>Timestamp</name>
+	    		<type>Datetime</type>
+	    	</field>
+	    	<field index="1">
+	    		<name>Thread Id</name>
+	    		<type>String</type>
+	    	</field>
+	    	<field index="2">
+	    		<name>Severity</name>
+	    		<type>String</type>
+	    	</field>
+	    	<field index="3">
+	    		<name>Name</name>
+	    		<type>String</type>
+	    	</field>
+	    	<field index="4">
+	    		<name>Filename</name>
+	    		<type>String</type>
+	    	</field>
+	    	<field index="5">
+	    		<name>Function Name</name>
+	    		<type>String</type>
+	    	</field>
+	    	<field index="6">
+	    		<name>Line number</name>
+	    		<type>Integer</type>
+	    	</field>
+	    	<field index="7">
+	    		<name>Message</name>
+	    		<type>String</type>
+	    	</field>
+    </log-format>
+</application>  

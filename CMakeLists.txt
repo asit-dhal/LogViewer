@@ -30,6 +30,7 @@ find_package(Qt5Widgets CONFIG REQUIRED)
 find_package(Qt5Core CONFIG REQUIRED)
 find_package(Qt5Gui CONFIG REQUIRED)
 find_package(Qt5Network CONFIG REQUIRED)
+find_package(Qt5Xml CONFIG REQUIRED)
 
 set(SRCS
     main.cpp
@@ -37,6 +38,7 @@ set(SRCS
     logmodel.cpp
     searchlogmodel.cpp
     settingsdialog.cpp
+    configuration.cpp
 )
 set(UIS
     mainwindow.ui
@@ -54,4 +56,5 @@ target_link_libraries(${PROJECT_NAME}
                     Qt5::Core
                     Qt5::Gui
                     Qt5::Network
+                    Qt5::Xml
                     )
