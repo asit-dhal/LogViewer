@@ -3,6 +3,19 @@
 #include "configuration.h"
 
 #include <QFileDialog>
+#include <QFileInfo>
+
+namespace {
+
+bool checkIfFileExists(const QString& filename) {
+    QFileInfo checkFile(filename);
+    if (checkFile.exists() && checkFile.isFile()) {
+        return true;
+    }
+    return false;
+}
+
+}
 
 SettingsDialog *SettingsDialog::m_settingsDialog = nullptr;
 
@@ -17,6 +30,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     m_configuration(new Configuration(this))
 {
     ui->setupUi(this);
+    QSettings::setDefaultFormat(QSettings::IniFormat);
 
     m_settingsDialog = this;
 
@@ -31,7 +45,14 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     connect(ui->loadConfigPushButton, &QPushButton::clicked, this, &SettingsDialog::onLoadConfigClicked);
     connect(ui->browseFilePushButton, &QPushButton::clicked, this, &SettingsDialog::onBrowseConfigClicked);
 
-    ui->loadConfigPushButton->setDisabled(true);
+
+     m_appSettings.beginGroup("last-config-file");
+     QString recentFile = m_appSettings.value("file-path").toString();
+     if (!recentFile.isEmpty() && checkIfFileExists(recentFile)) {
+        ui->filenameLineEdit->setText(recentFile);
+     }
+     m_appSettings.endGroup();
+     ui->loadConfigPushButton->setDisabled(true);
 }
 
 SettingsDialog::~SettingsDialog()
@@ -46,11 +67,19 @@ void SettingsDialog::onLoadConfigClicked()
 
 void SettingsDialog::onBrowseConfigClicked()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Config File"), "", tr("Config File (*.xml)"));
-    if (fileName.isEmpty()) {
+    QString lastFilePath;
+    if (!ui->filenameLineEdit->text().isEmpty()) {
+        lastFilePath = QFileInfo(ui->filenameLineEdit->text()).absoluteDir().absolutePath();
+    }
+
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Config File"), lastFilePath, tr("Config File (*.xml)"));
+    if (fileName.isEmpty() && checkIfFileExists(fileName)) {
         updateStatus(tr("Select a file"));
         ui->loadConfigPushButton->setDisabled(true);
     } else {
+        m_appSettings.beginGroup("last-config-file");
+        m_appSettings.setValue("file-path", fileName);
+        m_appSettings.endGroup();
         ui->filenameLineEdit->setText(fileName);
         ui->loadConfigPushButton->setDisabled(false);
     }

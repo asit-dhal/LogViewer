@@ -2,6 +2,7 @@
 #define SETTINGSDIALOG_H
 
 #include <QDialog>
+#include <QSettings>
 
 namespace Ui {
 class SettingsDialog;
@@ -26,6 +27,7 @@ public:
 private:
     Ui::SettingsDialog *ui;
     Configuration *m_configuration;
+    QSettings m_appSettings;
     static SettingsDialog *m_settingsDialog;
 };
 
