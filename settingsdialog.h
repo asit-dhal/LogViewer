@@ -8,8 +8,6 @@ namespace Ui {
 class SettingsDialog;
 }
 
-class Configuration;
-
 class SettingsDialog : public QDialog
 {
     Q_OBJECT
@@ -26,7 +24,6 @@ public:
 
 private:
     Ui::SettingsDialog *ui;
-    Configuration *m_configuration;
     QSettings m_appSettings;
     static SettingsDialog *m_settingsDialog;
 };

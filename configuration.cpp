@@ -5,8 +5,16 @@
 #include <QFile>
 #include <QMessageBox>
 
+Configuration *Configuration::m_configuration = nullptr;
+
+Configuration* Configuration::getInstance()
+{
+    return m_configuration;
+}
+
 Configuration::Configuration(QObject *parent) : QObject(parent)
 {
+    m_configuration = this;
 }
 
 unsigned int Configuration::port() const

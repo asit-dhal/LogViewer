@@ -8,6 +8,7 @@ class SearchLogModel;
 class QUdpSocket;
 class QAction;
 class SettingsDialog;
+class Configuration;
 
 namespace Ui {
 class MainWindow;
@@ -41,6 +42,8 @@ private:
 
     QAction *m_startStopRecording;
     QAction *m_clearAction;
+    QAction *m_loadConfigurationAction;
+    Configuration *m_configuration;
 };
 
 #endif // MAINWINDOW_H

@@ -28,6 +28,7 @@ public:
     };
 
     explicit Configuration(QObject *parent = nullptr);
+    static Configuration* getInstance();
 
 
     unsigned int port() const;
@@ -43,6 +44,8 @@ public:
 
     void load(const QString &filename);
 
+
+
 signals:
     void portChanged(unsigned int port);
     void ipAddressChanged(QHostAddress ipAddress);
@@ -53,6 +56,7 @@ public slots:
 private:
     unsigned int m_port;
     QHostAddress m_ipAddress;
+    static Configuration *m_configuration;
     QMap<unsigned int, Field> m_fields;
 };
 

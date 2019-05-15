@@ -3,6 +3,7 @@
 #include "logmodel.h"
 #include "searchlogmodel.h"
 #include "settingsdialog.h"
+#include "configuration.h"
 #include <QAbstractItemView>
 
 #include <QAction>
@@ -10,7 +11,8 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    m_configuration( new Configuration(qobject_cast<QObject*>(this)))
 {
     ui->setupUi(this);
 
@@ -71,7 +73,9 @@ void MainWindow::createActions()
     m_clearAction = ui->mainToolBar->addAction(tr("Clear"));
     connect(m_clearAction, &QAction::triggered, [this]() { m_logModel->clear();});
 
-    connect(ui->actionSettings, &QAction::triggered, this, &MainWindow::onSettingsAction);
+    m_loadConfigurationAction = ui->mainToolBar->addAction(tr("Load Configuration"));
+    connect(m_loadConfigurationAction, &QAction::triggered, this, &MainWindow::onSettingsAction);
+    connect(ui->actionSettings, &QAction::triggered, m_loadConfigurationAction, &QAction::triggered);
 }
 
 void MainWindow::onConnectDisconnectActionTriggered(bool checked)

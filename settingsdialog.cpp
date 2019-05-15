@@ -26,22 +26,21 @@ SettingsDialog *SettingsDialog::getSettingsDialog()
 
 SettingsDialog::SettingsDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::SettingsDialog),
-    m_configuration(new Configuration(this))
+    ui(new Ui::SettingsDialog)
 {
     ui->setupUi(this);
     QSettings::setDefaultFormat(QSettings::IniFormat);
 
     m_settingsDialog = this;
 
-    connect(m_configuration, &Configuration::portChanged, [this](unsigned int port) {
+    connect(Configuration::getInstance(), &Configuration::portChanged, [this](unsigned int port) {
         ui->portNumberLineEdit->setText(QString::number(port));
     });
-    connect(m_configuration, &Configuration::ipAddressChanged, [this](const QHostAddress &hostAddress) {
+    connect(Configuration::getInstance(), &Configuration::ipAddressChanged, [this](const QHostAddress &hostAddress) {
         ui->hostnameLineEdit->setText(hostAddress.toString());
     });
 
-    connect(m_configuration, &Configuration::fieldChanged, this, &SettingsDialog::populateFields);
+    connect(Configuration::getInstance(), &Configuration::fieldChanged, this, &SettingsDialog::populateFields);
     connect(ui->loadConfigPushButton, &QPushButton::clicked, this, &SettingsDialog::onLoadConfigClicked);
     connect(ui->browseFilePushButton, &QPushButton::clicked, this, &SettingsDialog::onBrowseConfigClicked);
 
@@ -50,9 +49,12 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
      QString recentFile = m_appSettings.value("file-path").toString();
      if (!recentFile.isEmpty() && checkIfFileExists(recentFile)) {
         ui->filenameLineEdit->setText(recentFile);
+        ui->loadConfigPushButton->setDisabled(false);
+     } else {
+         ui->loadConfigPushButton->setDisabled(true);
      }
      m_appSettings.endGroup();
-     ui->loadConfigPushButton->setDisabled(true);
+
 }
 
 SettingsDialog::~SettingsDialog()
@@ -62,7 +64,7 @@ SettingsDialog::~SettingsDialog()
 
 void SettingsDialog::onLoadConfigClicked()
 {
-    m_configuration->load(ui->filenameLineEdit->text().trimmed());
+    Configuration::getInstance()->load(ui->filenameLineEdit->text().trimmed());
 }
 
 void SettingsDialog::onBrowseConfigClicked()
@@ -88,15 +90,15 @@ void SettingsDialog::onBrowseConfigClicked()
 void SettingsDialog::populateFields()
 {
     ui->selectedFieldsTableWidget->setColumnCount(3);
-    ui->selectedFieldsTableWidget->setRowCount(m_configuration->fieldCount());
+    ui->selectedFieldsTableWidget->setRowCount(Configuration::getInstance()->fieldCount());
 
     QStringList tableHeader;
     tableHeader << "Index" << "Name" << "Type";
     ui->selectedFieldsTableWidget->setHorizontalHeaderLabels(tableHeader);
     ui->selectedFieldsTableWidget->verticalHeader()->setVisible(false);
 
-    for(int i = 0; i < m_configuration->fieldCount(); i++) {
-        Configuration::Field field = m_configuration->fieldAt(static_cast<unsigned int>(i));
+    for(int i = 0; i < Configuration::getInstance()->fieldCount(); i++) {
+        Configuration::Field field = Configuration::getInstance()->fieldAt(static_cast<unsigned int>(i));
         ui->selectedFieldsTableWidget->setItem(i, 0, new QTableWidgetItem(QString::number(field.index)));
         ui->selectedFieldsTableWidget->setItem(i, 1, new QTableWidgetItem(field.name));
         switch (field.fieldType) {
