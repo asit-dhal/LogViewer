@@ -30,18 +30,37 @@ SOURCES += \
     logmodel.cpp \
     searchlogmodel.cpp \
     settingsdialog.cpp \
-    configuration.cpp
+    configuration.cpp \
+    filterdialog.cpp \
+    newprojecwizardpage.cpp \
+    project.cpp \
+    newprojectwizard.cpp \
+    projectattributeswizardpage.cpp \
+    fieldmodel.cpp \
+    fielddelegate.cpp \
+    fieldview.cpp
 
 HEADERS += \
         mainwindow.h \
     logmodel.h \
     searchlogmodel.h \
     settingsdialog.h \
-    configuration.h
+    configuration.h \
+    filterdialog.h \
+    newprojecwizardpage.h \
+    project.h \
+    newprojectwizard.h \
+    projectattributeswizardpage.h \
+    fieldmodel.h \
+    fielddelegate.h \
+    fieldview.h
 
 FORMS += \
         mainwindow.ui \
-    settingsdialog.ui
+    settingsdialog.ui \
+    filterdialog.ui \
+    newprojecwizardpage.ui \
+    projectattributeswizardpage.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

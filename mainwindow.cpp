@@ -4,8 +4,9 @@
 #include "searchlogmodel.h"
 #include "settingsdialog.h"
 #include "configuration.h"
+#include "newprojectwizard.h"
 #include <QAbstractItemView>
-
+#include "project.h"
 #include <QAction>
 #include <QUdpSocket>
 
@@ -16,6 +17,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    new Project(this);
+
+    m_newProjectWizard = new NewProjectWizard(this);
     m_logModel = new LogModel(this);
     m_searchLogModel = new SearchLogModel(this);
     m_settingsDialog = new SettingsDialog(this);
@@ -56,6 +60,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
         }
     });
+
+
 }
 
 MainWindow::~MainWindow()
@@ -76,6 +82,8 @@ void MainWindow::createActions()
     m_loadConfigurationAction = ui->mainToolBar->addAction(tr("Load Configuration"));
     connect(m_loadConfigurationAction, &QAction::triggered, this, &MainWindow::onSettingsAction);
     connect(ui->actionSettings, &QAction::triggered, m_loadConfigurationAction, &QAction::triggered);
+
+    connect(ui->actionNewProject, &QAction::triggered, this, &MainWindow::onNewProject);
 }
 
 void MainWindow::onConnectDisconnectActionTriggered(bool checked)
@@ -185,4 +193,9 @@ void MainWindow::onLogTableHeaderContextMenuRequested(const QPoint &p)
 void MainWindow::scrollToBottomLogTable()
 {
     ui->logTableView->scrollToBottom();
+}
+
+void MainWindow::onNewProject()
+{
+    m_newProjectWizard->exec();
 }

@@ -124,7 +124,7 @@ border-width:1px;
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionNew"/>
+    <addaction name="actionNewProject"/>
     <addaction name="actionOpen"/>
     <addaction name="actionSave"/>
     <addaction name="actionSave_As"/>
@@ -138,14 +138,14 @@ border-width:1px;
    </widget>
    <addaction name="menuFile"/>
   </widget>
-  <action name="actionNew">
+  <action name="actionNewProject">
    <property name="text">
-    <string>New</string>
+    <string>New Project</string>
    </property>
   </action>
   <action name="actionOpen">
    <property name="text">
-    <string>Open</string>
+    <string>Open Project</string>
    </property>
   </action>
   <action name="actionSave">

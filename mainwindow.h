@@ -9,6 +9,7 @@ class QUdpSocket;
 class QAction;
 class SettingsDialog;
 class Configuration;
+class NewProjectWizard;
 
 namespace Ui {
 class MainWindow;
@@ -27,6 +28,7 @@ private:
     void onConnectDisconnectActionTriggered(bool checked);
     void onLogTableHeaderContextMenuRequested(const QPoint &p);
     void onSettingsAction();
+    void onNewProject();
     void processPendingDatagrams();
 
     void scrollToBottomLogTable();
@@ -44,6 +46,7 @@ private:
     QAction *m_clearAction;
     QAction *m_loadConfigurationAction;
     Configuration *m_configuration;
+    NewProjectWizard *m_newProjectWizard;
 };
 
 #endif // MAINWINDOW_H
