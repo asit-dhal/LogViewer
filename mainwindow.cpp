@@ -5,6 +5,7 @@
 #include "settingsdialog.h"
 #include "configuration.h"
 #include "newprojectwizard.h"
+#include "fieldmodel.h"
 #include <QAbstractItemView>
 #include "project.h"
 #include <QAction>
@@ -18,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     new Project(this);
+    new FieldModel(this);
 
     m_newProjectWizard = new NewProjectWizard(this);
     m_logModel = new LogModel(this);

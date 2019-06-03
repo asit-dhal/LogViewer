@@ -7,8 +7,16 @@ class QAbstractItemModel;
 
 class FieldView : public QTableView
 {
+    Q_OBJECT
 public:
-    FieldView(QAbstractItemModel * model);
+    explicit FieldView(QWidget *parent=nullptr);
+    virtual ~FieldView() = default;
+
+ private slots:
+    void onContextMenuOnHeader(QPoint p);
+    void onContextMenuOnBody(QPoint p);
+    void onSlotMoveLast();
+    void onSlotMoveFirst();
 };
 
 #endif // FIELDVIEW_H

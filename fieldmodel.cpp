@@ -22,9 +22,30 @@ FieldType stringToFieldType(const QString& fieldType)
         return  FieldType::eTimestamp;
 }
 
+Field::Field()
+{
+    name = QObject::tr("Default");
+    index = static_cast<unsigned int>(FieldModel::instance()->rowCount() + 1);
+    fieldType = FieldType::eString;
+}
+
+Field::Field(QString name, unsigned int index, FieldType fieldType) :
+    name(name), index(index), fieldType(fieldType)
+{
+}
+
+
+FieldModel *FieldModel::m_instance = nullptr;
+
 FieldModel::FieldModel(QObject *parent)
     : QAbstractTableModel(parent)
 {
+    m_instance = this;
+}
+
+FieldModel *FieldModel::instance()
+{
+    return m_instance;
 }
 
 QVariant FieldModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -135,6 +156,8 @@ void FieldModel::removeField(int index)
     beginRemoveRows(QModelIndex(), index, index);
     m_fields.removeAt(index);
     endRemoveRows();
+
+    correctIndexes();
 }
 
 bool FieldModel::setData(const QModelIndex &index, const QVariant &value, int role)
@@ -157,4 +180,15 @@ bool FieldModel::setData(const QModelIndex &index, const QVariant &value, int ro
     }
     emit dataChanged(index, index);
     return true;
+}
+
+void FieldModel::correctIndexes()
+{
+    beginResetModel();
+
+    for (int i=0; i<m_fields.size(); i++) {
+        m_fields[i].index = static_cast<unsigned int>(i+1);
+    }
+
+    endResetModel();
 }

@@ -16,13 +16,8 @@ struct Field {
     QString name;
     unsigned int index;
     FieldType fieldType;
-
-    Field(){}
-
-    Field(QString name, unsigned int index, FieldType fieldType) :
-        name(name), index(index), fieldType(fieldType)
-    {
-    }
+    Field();
+    Field(QString name, unsigned int index, FieldType fieldType);
 };
 
 class FieldModel : public QAbstractTableModel
@@ -33,13 +28,15 @@ public:
     enum { eIndex = 0, eName, eType };
     explicit FieldModel(QObject *parent = nullptr);
 
+    static FieldModel *instance();
+
     // Header:
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
     // Basic functionality:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
-    Qt::ItemFlags flags(const QModelIndex &index) const;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     bool setData(const QModelIndex &index, const QVariant &value, int role=Qt::EditRole) override;
@@ -48,8 +45,13 @@ public:
     void removeField(int index);
 
 private:
+    void correctIndexes();
+
+    static FieldModel *m_instance;
     QList<Field> m_fields;
 
 };
+
+
 
 #endif // FIELDMODEL_H

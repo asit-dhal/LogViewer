@@ -2,6 +2,7 @@
 #define PROJECTATTRIBUTESWIZARDPAGE_H
 
 #include <QWizardPage>
+#include <QItemSelectionModel>
 
 namespace Ui {
 class ProjectAttributesWizardPage;
@@ -20,6 +21,7 @@ private:
     void onFieldRemove();
     void onFieldMoveUp();
     void onFieldMoveDown();
+    void onSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 
 private:
     Ui::ProjectAttributesWizardPage *ui;

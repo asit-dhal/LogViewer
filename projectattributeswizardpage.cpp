@@ -1,6 +1,8 @@
 #include "projectattributeswizardpage.h"
 #include "ui_projectattributeswizardpage.h"
 #include "project.h"
+#include "fieldmodel.h"
+#include "fielddelegate.h"
 
 ProjectAttributesWizardPage::ProjectAttributesWizardPage(QWidget *parent) :
     QWizardPage(parent),
@@ -8,18 +10,21 @@ ProjectAttributesWizardPage::ProjectAttributesWizardPage(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->fieldsTableWidget->setColumnCount(3);
-    ui->fieldsTableWidget->setRowCount(Project::instance()->fieldCount());
-
-    QStringList tableHeader;
-    tableHeader << "Index" << "Name" << "Type";
-    ui->fieldsTableWidget->setHorizontalHeaderLabels(tableHeader);
-    ui->fieldsTableWidget->verticalHeader()->setVisible(false);
+    ui->fieldTableView->setModel(FieldModel::instance());
+    ui->fieldTableView->setItemDelegate(new FieldDelegate(this));
+    ui->fieldTableView->verticalHeader()->setVisible(false);
+    ui->fieldTableView->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->fieldTableView->setSelectionBehavior(QAbstractItemView::SelectRows);
 
     connect(ui->addPushButton, &QPushButton::clicked, this, &ProjectAttributesWizardPage::onFieldAdd);
     connect(ui->removePushButton, &QPushButton::clicked, this, &ProjectAttributesWizardPage::onFieldRemove);
     connect(ui->moveUpPushButton, &QPushButton::clicked, this, &ProjectAttributesWizardPage::onFieldMoveUp);
     connect(ui->moveDownPushButton, &QPushButton::clicked, this, &ProjectAttributesWizardPage::onFieldMoveDown);
+    connect(ui->fieldTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ProjectAttributesWizardPage::onSelectionChanged);
+
+    ui->removePushButton->setEnabled(false);
+    ui->moveUpPushButton->setEnabled(false);
+    ui->moveDownPushButton->setEnabled(false);
 }
 
 ProjectAttributesWizardPage::~ProjectAttributesWizardPage()
@@ -29,29 +34,15 @@ ProjectAttributesWizardPage::~ProjectAttributesWizardPage()
 
 void ProjectAttributesWizardPage::onFieldAdd()
 {
-
-    int rowIndex = ui->fieldsTableWidget->rowCount();
-    ui->fieldsTableWidget->insertRow(rowIndex);
-
-    QLineEdit *indexItem = new QLineEdit();
-    indexItem->setText(QString::number(rowIndex));
-    ui->fieldsTableWidget->setCellWidget(rowIndex, 0, indexItem);
-
-    QLineEdit *nameLineEdit = new QLineEdit();
-    nameLineEdit->setText(tr("Default"));
-    ui->fieldsTableWidget->setCellWidget(rowIndex, 1, nameLineEdit);
-
-    QComboBox *fieldTypeComboBox = new QComboBox();
-    fieldTypeComboBox->addItem(tr("String"));
-    fieldTypeComboBox->addItem(tr("Number"));
-    fieldTypeComboBox->addItem(tr("Timestamp"));
-    fieldTypeComboBox->setCurrentIndex(0);
-    ui->fieldsTableWidget->setCellWidget(rowIndex, 2, fieldTypeComboBox);
+    FieldModel::instance()->addField(Field());
 }
 
 void ProjectAttributesWizardPage::onFieldRemove()
 {
-
+    QItemSelectionModel *selectionModel = ui->fieldTableView->selectionModel();
+    for (const QModelIndex &index: selectionModel->selectedRows()) {
+        FieldModel::instance()->removeField(index.row());
+    }
 }
 
 void ProjectAttributesWizardPage::onFieldMoveUp()
@@ -62,4 +53,15 @@ void ProjectAttributesWizardPage::onFieldMoveUp()
 void ProjectAttributesWizardPage::onFieldMoveDown()
 {
 
+}
+
+void ProjectAttributesWizardPage::onSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
+{
+    Q_UNUSED(selected);
+    Q_UNUSED(deselected);
+
+    QItemSelectionModel *selectionModel = ui->fieldTableView->selectionModel();
+    ui->removePushButton->setEnabled(selectionModel->hasSelection());
+    ui->moveUpPushButton->setEnabled(selectionModel->hasSelection());
+    ui->moveDownPushButton->setEnabled(selectionModel->hasSelection());
 }
