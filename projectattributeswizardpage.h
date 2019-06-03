@@ -22,6 +22,7 @@ private:
     void onFieldMoveUp();
     void onFieldMoveDown();
     void onSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+    void onPopulateDefaultAttributes();
 
 private:
     Ui::ProjectAttributesWizardPage *ui;

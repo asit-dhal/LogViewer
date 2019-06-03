@@ -15,7 +15,9 @@ NewProjecWizardPage::NewProjecWizardPage(QWidget *parent) :
     ui->pathLineEdit->setText(Project::instance()->path());
 
     connect(ui->projectNameLineEdit, &QLineEdit::editingFinished, this, &NewProjecWizardPage::completeChanged);
+    connect(ui->projectNameLineEdit, &QLineEdit::textChanged, [this](const QString &) { emit completeChanged(); });
     connect(ui->pathLineEdit, &QLineEdit::editingFinished, this, &NewProjecWizardPage::completeChanged);
+    connect(ui->pathLineEdit, &QLineEdit::textChanged, [this](const QString &) { emit completeChanged(); });
     connect(ui->browsePushButton, &QPushButton::clicked, this, &NewProjecWizardPage::selectProjectDir);
 }
 

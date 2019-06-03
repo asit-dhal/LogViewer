@@ -6,7 +6,7 @@
 const QString fieldTypeToString(FieldType fieldType)
 {
     switch (fieldType) {
-        case FieldType::eString: return QString("Name");
+        case FieldType::eString: return QString("String");
         case FieldType::eNumber: return QString("Number");
         case FieldType::eTimestamp: return QString("Timestamp");
     }
@@ -92,7 +92,7 @@ Qt::ItemFlags FieldModel::flags(const QModelIndex &index) const
 QVariant FieldModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid() || index.row() < 0 || index.row() >= m_fields.count() ||
-            index.column() < 0 || index.row() >= 3) {
+            index.column() < 0 || index.column() >= 3) {
         return QVariant();
     }
 

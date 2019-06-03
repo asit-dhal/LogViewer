@@ -20,6 +20,7 @@ ProjectAttributesWizardPage::ProjectAttributesWizardPage(QWidget *parent) :
     connect(ui->removePushButton, &QPushButton::clicked, this, &ProjectAttributesWizardPage::onFieldRemove);
     connect(ui->moveUpPushButton, &QPushButton::clicked, this, &ProjectAttributesWizardPage::onFieldMoveUp);
     connect(ui->moveDownPushButton, &QPushButton::clicked, this, &ProjectAttributesWizardPage::onFieldMoveDown);
+    connect(ui->populateDefaultPushButton, &QPushButton::clicked, this, &ProjectAttributesWizardPage::onPopulateDefaultAttributes);
     connect(ui->fieldTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ProjectAttributesWizardPage::onSelectionChanged);
 
     ui->removePushButton->setEnabled(false);
@@ -64,4 +65,16 @@ void ProjectAttributesWizardPage::onSelectionChanged(const QItemSelection &selec
     ui->removePushButton->setEnabled(selectionModel->hasSelection());
     ui->moveUpPushButton->setEnabled(selectionModel->hasSelection());
     ui->moveDownPushButton->setEnabled(selectionModel->hasSelection());
+}
+
+void ProjectAttributesWizardPage::onPopulateDefaultAttributes()
+{
+    auto model = FieldModel::instance();
+    model->addField(Field(tr("Timestamp"), 1, FieldType::eTimestamp));
+    model->addField(Field(tr("Thread Id"), 2, FieldType::eString));
+    model->addField(Field(tr("Log Level"), 3, FieldType::eString));
+    model->addField(Field(tr("Category"), 4, FieldType::eString));
+    model->addField(Field(tr("Filename"), 5, FieldType::eString));
+    model->addField(Field(tr("Line"), 6, FieldType::eNumber));
+    model->addField(Field(tr("Payload"), 7, FieldType::eString));
 }
