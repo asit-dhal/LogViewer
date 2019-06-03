@@ -39,10 +39,21 @@ set(SRCS
     searchlogmodel.cpp
     settingsdialog.cpp
     configuration.cpp
+    filterdialog.cpp
+    newprojecwizardpage.cpp
+    project.cpp
+    newprojectwizard.cpp
+    projectattributeswizardpage.cpp
+    fieldmodel.cpp
+    fielddelegate.cpp
+    fieldview.cpp
 )
 set(UIS
     mainwindow.ui
     settingsdialog.ui
+    filterdialog.ui
+    newprojecwizardpage.ui
+    projectattributeswizardpage.ui
 )
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
