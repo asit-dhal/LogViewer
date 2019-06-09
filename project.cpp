@@ -32,6 +32,16 @@ Project *Project::instance()
     return m_instance;
 }
 
+QHostAddress Project::ipAddress() const
+{
+    return m_ipAddress;
+}
+
+unsigned int Project::portNumber() const
+{
+    return m_portNumber;
+}
+
 void Project::clear()
 {
     m_name.clear();
@@ -39,15 +49,36 @@ void Project::clear()
     m_fields.clear();
 }
 
-void Project::addField(unsigned int index, QString name, FieldType fieldType)
+void Project::addField(const Field &field)
 {
-    m_fields[index] = Field(name, index, fieldType);
+    m_fields.append(field);
+}
+
+void Project::addField(const QString &name, FieldType fieldType)
+{
+    m_fields.append(Field(name, fieldType));
     emit fieldChanged();
 }
 
-Project::Field Project::fieldAt(unsigned int index) const
+const Field &Project::fieldAt(int index) const
 {
-    return m_fields.value(index);
+    return m_fields[index];
+}
+
+Field &Project::fieldAt(int index)
+{
+    return m_fields[index];
+}
+
+void Project::removeField(const QString &name)
+{
+    Field field(name, FieldType::eNumber);
+    m_fields.removeOne(field);
+}
+
+void Project::removeFieldAt(int index)
+{
+    m_fields.removeAt(index);
 }
 
 int Project::fieldCount() const
@@ -55,3 +86,12 @@ int Project::fieldCount() const
     return m_fields.size();
 }
 
+void Project::setIpAddress(const QHostAddress &ipAddress)
+{
+    m_ipAddress = ipAddress;
+}
+
+void Project::setPortNumber(unsigned int portNumber)
+{
+    m_portNumber = portNumber;
+}

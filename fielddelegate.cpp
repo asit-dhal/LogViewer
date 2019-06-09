@@ -7,27 +7,27 @@
 
 void FieldDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    if (index.column() == FieldModel::eIndex) {
-        QStyleOptionViewItem opt(option);
-        initStyleOption(&opt, index);
-        QString text = QString("%1").arg(opt.text.toInt(), 5, 10, QChar('0'));
-        painter->save();
-        painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
-        if (opt.state & QStyle::State_Selected) {
-            painter->fillRect(opt.rect, opt.palette.highlight());
-            painter->setPen(opt.palette.highlightedText().color());
-        }
-        else {
-            painter->setPen(opt.palette.windowText().color());
-        }
+//    if (index.column() == FieldModel::eIndex) {
+//        QStyleOptionViewItem opt(option);
+//        initStyleOption(&opt, index);
+//        QString text = QString("%1").arg(opt.text.toInt(), 5, 10, QChar('0'));
+//        painter->save();
+//        painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+//        if (opt.state & QStyle::State_Selected) {
+//            painter->fillRect(opt.rect, opt.palette.highlight());
+//            painter->setPen(opt.palette.highlightedText().color());
+//        }
+//        else {
+//            painter->setPen(opt.palette.windowText().color());
+//        }
 
-        painter->drawText(opt.rect.adjusted(0, 0, -3, 0), text,
-                QTextOption(Qt::AlignVCenter|Qt::AlignRight));
-        painter->restore();
-    }
-    else {
+//        painter->drawText(opt.rect.adjusted(0, 0, -3, 0), text,
+//                QTextOption(Qt::AlignVCenter|Qt::AlignRight));
+//        painter->restore();
+//    }
+//    else {
         QStyledItemDelegate::paint(painter, option, index);
-    }
+    //}
 }
 
 QWidget *FieldDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const

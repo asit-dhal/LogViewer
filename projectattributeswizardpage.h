@@ -23,6 +23,9 @@ private:
     void onFieldMoveDown();
     void onSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
     void onPopulateDefaultAttributes();
+    void onPortNumberChanged();
+    void onIPAddressChanged();
+    bool isComplete() const;
 
 private:
     Ui::ProjectAttributesWizardPage *ui;

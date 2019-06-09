@@ -2,30 +2,14 @@
 #define FIELDMODEL_H
 
 #include <QAbstractTableModel>
-
-enum class FieldType {
-    eString = 0,
-    eNumber,
-    eTimestamp
-};
-
-const QString fieldTypeToString(FieldType fieldType);
-FieldType stringToFieldType(const QString& fieldType);
-
-struct Field {
-    QString name;
-    unsigned int index;
-    FieldType fieldType;
-    Field();
-    Field(QString name, unsigned int index, FieldType fieldType);
-};
+#include "field.h"
 
 class FieldModel : public QAbstractTableModel
 {
     Q_OBJECT
 
 public:
-    enum { eIndex = 0, eName, eType };
+    enum { eName = 0, eType };
     explicit FieldModel(QObject *parent = nullptr);
 
     static FieldModel *instance();
@@ -43,11 +27,7 @@ public:
     void removeField(int index);
 
 private:
-    void correctIndexes();
-
     static FieldModel *m_instance;
-    QList<Field> m_fields;
-
 };
 
 

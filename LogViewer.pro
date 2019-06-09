@@ -38,7 +38,8 @@ SOURCES += \
     projectattributeswizardpage.cpp \
     fieldmodel.cpp \
     fielddelegate.cpp \
-    fieldview.cpp
+    fieldview.cpp \
+    field.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -53,7 +54,8 @@ HEADERS += \
     projectattributeswizardpage.h \
     fieldmodel.h \
     fielddelegate.h \
-    fieldview.h
+    fieldview.h \
+    field.h
 
 FORMS += \
         mainwindow.ui \

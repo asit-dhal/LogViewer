@@ -47,6 +47,7 @@ set(SRCS
     fieldmodel.cpp
     fielddelegate.cpp
     fieldview.cpp
+    field.cpp
 )
 set(UIS
     mainwindow.ui

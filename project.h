@@ -4,30 +4,12 @@
 #include <QObject>
 #include <QMap>
 #include <QHostAddress>
+#include "field.h"
 
 class Project : public QObject
 {
     Q_OBJECT
 public:
-    enum class FieldType {
-        eString,
-        eNumber,
-        eTimestamp
-    };
-
-    struct Field {
-        QString name;
-        unsigned int index;
-        FieldType fieldType;
-
-        Field(){}
-
-        Field(QString name, unsigned int index, FieldType fieldType) :
-            name(name), index(index), fieldType(fieldType)
-        {
-        }
-    };
-
     explicit Project(QObject *parent = nullptr);
 
     QString name() const;
@@ -36,13 +18,22 @@ public:
     QString path() const;
     void setPath(const QString &path);
 
-    void addField(unsigned int index, QString name, FieldType fieldType);
-    Field fieldAt(unsigned int index) const;
+    void addField(const Field &field);
+    void addField(const QString &name, FieldType fieldType);
+    void removeField(const QString &name);
+    void removeFieldAt(int index);
+    const Field &fieldAt(int index) const;
+    Field &fieldAt(int index);
     int fieldCount() const;
 
     void clear();
+    void setIpAddress(const QHostAddress &ipAddress);
+    void setPortNumber(unsigned int portNumber);
 
     static Project *instance();
+
+    QHostAddress ipAddress() const;
+    unsigned int portNumber() const;
 
 signals:
     void portChanged(unsigned int port);
@@ -54,8 +45,9 @@ public slots:
 private:
     QString m_name;
     QString m_path;
-    QMap<unsigned int, Field> m_fields;
-
+    QList<Field> m_fields;
+    QHostAddress m_ipAddress = QHostAddress::Null;
+    unsigned int m_portNumber = 0;
     static Project *m_instance;
 
 };

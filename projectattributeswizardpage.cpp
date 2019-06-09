@@ -4,15 +4,19 @@
 #include "fieldmodel.h"
 #include "fielddelegate.h"
 
+
 ProjectAttributesWizardPage::ProjectAttributesWizardPage(QWidget *parent) :
     QWizardPage(parent),
     ui(new Ui::ProjectAttributesWizardPage)
 {
     ui->setupUi(this);
 
+    /*ui->ipAddressLineEdit->setInputMask("000.000.000.000;_");
+    ui->portNumberLineEdit->setInputMask("000000");*/
+
     ui->fieldTableView->setModel(FieldModel::instance());
     ui->fieldTableView->setItemDelegate(new FieldDelegate(this));
-    ui->fieldTableView->verticalHeader()->setVisible(false);
+    ui->fieldTableView->verticalHeader()->setVisible(true);
     ui->fieldTableView->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->fieldTableView->setSelectionBehavior(QAbstractItemView::SelectRows);
 
@@ -22,6 +26,8 @@ ProjectAttributesWizardPage::ProjectAttributesWizardPage(QWidget *parent) :
     connect(ui->moveDownPushButton, &QPushButton::clicked, this, &ProjectAttributesWizardPage::onFieldMoveDown);
     connect(ui->populateDefaultPushButton, &QPushButton::clicked, this, &ProjectAttributesWizardPage::onPopulateDefaultAttributes);
     connect(ui->fieldTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ProjectAttributesWizardPage::onSelectionChanged);
+    connect(ui->ipAddressLineEdit, &QLineEdit::editingFinished, this, &ProjectAttributesWizardPage::onIPAddressChanged);
+    connect(ui->portNumberLineEdit, &QLineEdit::editingFinished, this, &ProjectAttributesWizardPage::onPortNumberChanged);
 
     ui->removePushButton->setEnabled(false);
     ui->moveUpPushButton->setEnabled(false);
@@ -70,11 +76,32 @@ void ProjectAttributesWizardPage::onSelectionChanged(const QItemSelection &selec
 void ProjectAttributesWizardPage::onPopulateDefaultAttributes()
 {
     auto model = FieldModel::instance();
-    model->addField(Field(tr("Timestamp"), 1, FieldType::eTimestamp));
-    model->addField(Field(tr("Thread Id"), 2, FieldType::eString));
-    model->addField(Field(tr("Log Level"), 3, FieldType::eString));
-    model->addField(Field(tr("Category"), 4, FieldType::eString));
-    model->addField(Field(tr("Filename"), 5, FieldType::eString));
-    model->addField(Field(tr("Line"), 6, FieldType::eNumber));
-    model->addField(Field(tr("Payload"), 7, FieldType::eString));
+    model->addField(Field(tr("Timestamp"), FieldType::eTimestamp));
+    model->addField(Field(tr("Thread Id"), FieldType::eString));
+    model->addField(Field(tr("Log Level"), FieldType::eString));
+    model->addField(Field(tr("Category"), FieldType::eString));
+    model->addField(Field(tr("Filename"), FieldType::eString));
+    model->addField(Field(tr("Line"), FieldType::eNumber));
+    model->addField(Field(tr("Payload"), FieldType::eString));
+}
+
+void ProjectAttributesWizardPage::onPortNumberChanged()
+{
+    unsigned int port = ui->portNumberLineEdit->text().trimmed().toUInt();
+    if ( port > 0)
+        Project::instance()->setPortNumber(port);
+}
+
+void ProjectAttributesWizardPage::onIPAddressChanged()
+{
+    const QString ipAddressStr = ui->ipAddressLineEdit->text().trimmed();
+    QHostAddress ipAddress(ipAddressStr);
+    Project::instance()->setIpAddress(ipAddress);
+}
+
+bool ProjectAttributesWizardPage::isComplete() const
+{
+    return FieldModel::instance()->rowCount() > 0
+            && Project::instance()->portNumber() > 0
+            && (Project::instance()->ipAddress() != QHostAddress::Null);
 }
