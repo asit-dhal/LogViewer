@@ -4,6 +4,8 @@
 #include "fieldmodel.h"
 #include "fielddelegate.h"
 
+#include <QDebug>
+
 
 ProjectAttributesWizardPage::ProjectAttributesWizardPage(QWidget *parent) :
     QWizardPage(parent),
@@ -32,6 +34,22 @@ ProjectAttributesWizardPage::ProjectAttributesWizardPage(QWidget *parent) :
     ui->removePushButton->setEnabled(false);
     ui->moveUpPushButton->setEnabled(false);
     ui->moveDownPushButton->setEnabled(false);
+
+    connect(ui->ipAddressLineEdit, &QLineEdit::textChanged, [this](const QString &) { emit completeChanged(); });
+    connect(ui->portNumberLineEdit, &QLineEdit::textChanged, [this](const QString &) { emit completeChanged(); });
+    connect(FieldModel::instance(), &FieldModel::rowsInserted, [this](const QModelIndex &, int, int) { emit completeChanged(); });
+    connect(FieldModel::instance(), &FieldModel::rowsRemoved, [this](const QModelIndex &, int, int) { emit completeChanged(); });
+    connect(FieldModel::instance(), &FieldModel::dataChanged, [this](const QModelIndex &, const QModelIndex &, const QVector<int> & roles) {
+        bool changed = false;
+        for (auto const &e: roles) {
+            if (e == Qt::DisplayRole) {
+                changed = true;
+            }
+        }
+        if (changed) {
+            emit completeChanged();
+        }
+    });
 }
 
 ProjectAttributesWizardPage::~ProjectAttributesWizardPage()
@@ -101,7 +119,11 @@ void ProjectAttributesWizardPage::onIPAddressChanged()
 
 bool ProjectAttributesWizardPage::isComplete() const
 {
-    return FieldModel::instance()->rowCount() > 0
+    qDebug() << "field count: " << Project::instance()->fieldCount();
+    qDebug() << "port number: " << Project::instance()->portNumber();
+    qDebug() << "ipaddress: " << Project::instance()->ipAddress();
+
+    return Project::instance()->fieldCount() > 0
             && Project::instance()->portNumber() > 0
             && (Project::instance()->ipAddress() != QHostAddress::Null);
 }
