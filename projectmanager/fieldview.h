@@ -3,6 +3,8 @@
 
 #include <QTableView>
 
+namespace ProjectManager {
+
 class QAbstractItemModel;
 
 class FieldView : public QTableView
@@ -18,5 +20,7 @@ public:
     void onSlotMoveLast();
     void onSlotMoveFirst();
 };
+
+} // ProjectManager
 
 #endif // FIELDVIEW_H

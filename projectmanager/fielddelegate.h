@@ -3,10 +3,12 @@
 
 #include <QStyledItemDelegate>
 
-
 class QModelIndex;
 class QPainter;
 class QStyleOptionViewItem;
+
+namespace ProjectManager {
+
 
 class FieldDelegate: public QStyledItemDelegate
 {
@@ -20,5 +22,7 @@ public:
     void setEditorData(QWidget *editor, const QModelIndex &index) const;
     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
 };
+
+} // ProjectManager
 
 #endif // FIELDDELEGATE_H

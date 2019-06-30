@@ -12,6 +12,7 @@ Configuration* Configuration::getInstance()
     return m_configuration;
 }
 
+
 Configuration::Configuration(QObject *parent) : QObject(parent)
 {
     m_configuration = this;

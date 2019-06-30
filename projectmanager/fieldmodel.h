@@ -2,7 +2,10 @@
 #define FIELDMODEL_H
 
 #include <QAbstractTableModel>
+#include <QModelIndex>
 #include "field.h"
+
+namespace ProjectManager {
 
 class FieldModel : public QAbstractTableModel
 {
@@ -30,6 +33,6 @@ private:
     static FieldModel *m_instance;
 };
 
-
+} // ProjectManager
 
 #endif // FIELDMODEL_H

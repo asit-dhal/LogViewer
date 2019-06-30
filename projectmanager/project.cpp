@@ -1,5 +1,8 @@
 #include "project.h"
 
+namespace ProjectManager {
+
+
 Project *Project::m_instance = nullptr;
 
 Project::Project(QObject *parent) : QObject(parent)
@@ -95,3 +98,5 @@ void Project::setPortNumber(unsigned int portNumber)
 {
     m_portNumber = portNumber;
 }
+
+} // ProjectManager

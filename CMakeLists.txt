@@ -1,6 +1,6 @@
 project(LogViewer CXX)
 
-cmake_minimum_required(VERSION 3.2.2)
+cmake_minimum_required(VERSION 3.10)
 
 set(PROJECT_NAME "LogViewer")
 
@@ -32,6 +32,9 @@ find_package(Qt5Gui CONFIG REQUIRED)
 find_package(Qt5Network CONFIG REQUIRED)
 find_package(Qt5Xml CONFIG REQUIRED)
 
+add_subdirectory(helper)
+add_subdirectory(projectmanager)
+
 set(SRCS
     main.cpp
     mainwindow.cpp
@@ -40,30 +43,21 @@ set(SRCS
     settingsdialog.cpp
     configuration.cpp
     filterdialog.cpp
-    newprojecwizardpage.cpp
-    project.cpp
-    newprojectwizard.cpp
-    projectattributeswizardpage.cpp
-    fieldmodel.cpp
-    fielddelegate.cpp
-    fieldview.cpp
-    field.cpp
 )
+
 set(UIS
     mainwindow.ui
     settingsdialog.ui
     filterdialog.ui
-    newprojecwizardpage.ui
-    projectattributeswizardpage.ui
 )
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-
-
 add_executable(${PROJECT_NAME} ${SRCS} ${UIS})
 
 target_link_libraries(${PROJECT_NAME}
+                projectmanager
+                helper
                     Qt5::Widgets
                     Qt5::Core
                     Qt5::Gui

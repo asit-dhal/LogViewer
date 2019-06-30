@@ -4,6 +4,8 @@
 #include <QWizardPage>
 #include <QItemSelectionModel>
 
+namespace ProjectManager {
+
 namespace Ui {
 class ProjectAttributesWizardPage;
 }
@@ -23,12 +25,12 @@ private:
     void onFieldMoveDown();
     void onSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
     void onPopulateDefaultAttributes();
-    void onPortNumberChanged();
-    void onIPAddressChanged();
     bool isComplete() const;
 
 private:
     Ui::ProjectAttributesWizardPage *ui;
 };
+
+} // ProjectManager
 
 #endif // PROJECTATTRIBUTESWIZARDPAGE_H

@@ -4,7 +4,10 @@
 #include <QObject>
 #include <QMap>
 #include <QHostAddress>
+#include <QDomDocument>
 #include "field.h"
+
+namespace ProjectManager {
 
 class Project : public QObject
 {
@@ -48,8 +51,11 @@ private:
     QList<Field> m_fields;
     QHostAddress m_ipAddress = QHostAddress::Null;
     unsigned int m_portNumber = 0;
+    QDomDocument m_fonfig;
     static Project *m_instance;
 
 };
+
+} // ProjectManager
 
 #endif // PROJECT_H

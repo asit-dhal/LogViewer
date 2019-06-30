@@ -2,6 +2,7 @@
 #include "fieldmodel.h"
 #include <QObject>
 
+namespace ProjectManager {
 
 const QString fieldTypeToString(FieldType fieldType)
 {
@@ -38,3 +39,4 @@ bool Field::operator==(const Field &field) const
     return QString::compare( name, field.name, Qt::CaseInsensitive);
 }
 
+} // ProjectManager

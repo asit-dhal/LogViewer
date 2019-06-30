@@ -1,17 +1,23 @@
-#include "newprojectwizard.h"
+#include "projectwizard.h"
 #include "newprojecwizardpage.h"
 #include "projectattributeswizardpage.h"
+#include "remoteendwizardpage.h"
 
-NewProjectWizard::NewProjectWizard(QWidget *parent) :
+namespace ProjectManager {
+
+ProjectWizard::ProjectWizard(QWidget *parent) :
     QWizard(parent)
 {
     setPage(NewProjectPageId, new NewProjecWizardPage);
+    setPage(RemoteEndpointPageId, new RemoteEndWizardPage);
     setPage(ProjectAttributePageId, new ProjectAttributesWizardPage);
     setStartId(NewProjectPageId);
 
     setModal(true);
 }
 
-NewProjectWizard::~NewProjectWizard()
+ProjectWizard::~ProjectWizard()
 {
 }
+
+} // ProjectManager

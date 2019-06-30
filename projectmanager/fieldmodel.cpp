@@ -4,6 +4,7 @@
 #include <QStyleOptionComboBox>
 #include <QApplication>
 
+namespace ProjectManager {
 
 FieldModel *FieldModel::m_instance = nullptr;
 
@@ -136,3 +137,5 @@ bool FieldModel::setData(const QModelIndex &index, const QVariant &value, int ro
     emit dataChanged(index, index);
     return true;
 }
+
+} // ProjectManager

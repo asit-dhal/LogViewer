@@ -5,16 +5,15 @@
 #include "fielddelegate.h"
 
 #include <QDebug>
+#include <QModelIndex>
 
+namespace ProjectManager {
 
 ProjectAttributesWizardPage::ProjectAttributesWizardPage(QWidget *parent) :
     QWizardPage(parent),
     ui(new Ui::ProjectAttributesWizardPage)
 {
     ui->setupUi(this);
-
-    /*ui->ipAddressLineEdit->setInputMask("000.000.000.000;_");
-    ui->portNumberLineEdit->setInputMask("000000");*/
 
     ui->fieldTableView->setModel(FieldModel::instance());
     ui->fieldTableView->setItemDelegate(new FieldDelegate(this));
@@ -28,15 +27,11 @@ ProjectAttributesWizardPage::ProjectAttributesWizardPage(QWidget *parent) :
     connect(ui->moveDownPushButton, &QPushButton::clicked, this, &ProjectAttributesWizardPage::onFieldMoveDown);
     connect(ui->populateDefaultPushButton, &QPushButton::clicked, this, &ProjectAttributesWizardPage::onPopulateDefaultAttributes);
     connect(ui->fieldTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ProjectAttributesWizardPage::onSelectionChanged);
-    connect(ui->ipAddressLineEdit, &QLineEdit::editingFinished, this, &ProjectAttributesWizardPage::onIPAddressChanged);
-    connect(ui->portNumberLineEdit, &QLineEdit::editingFinished, this, &ProjectAttributesWizardPage::onPortNumberChanged);
 
     ui->removePushButton->setEnabled(false);
     ui->moveUpPushButton->setEnabled(false);
     ui->moveDownPushButton->setEnabled(false);
 
-    connect(ui->ipAddressLineEdit, &QLineEdit::textChanged, [this](const QString &) { emit completeChanged(); });
-    connect(ui->portNumberLineEdit, &QLineEdit::textChanged, [this](const QString &) { emit completeChanged(); });
     connect(FieldModel::instance(), &FieldModel::rowsInserted, [this](const QModelIndex &, int, int) { emit completeChanged(); });
     connect(FieldModel::instance(), &FieldModel::rowsRemoved, [this](const QModelIndex &, int, int) { emit completeChanged(); });
     connect(FieldModel::instance(), &FieldModel::dataChanged, [this](const QModelIndex &, const QModelIndex &, const QVector<int> & roles) {
@@ -65,7 +60,7 @@ void ProjectAttributesWizardPage::onFieldAdd()
 void ProjectAttributesWizardPage::onFieldRemove()
 {
     QItemSelectionModel *selectionModel = ui->fieldTableView->selectionModel();
-    for (const QModelIndex &index: selectionModel->selectedRows()) {
+    for (const auto &index: selectionModel->selectedRows()) {
         FieldModel::instance()->removeField(index.row());
     }
 }
@@ -103,20 +98,6 @@ void ProjectAttributesWizardPage::onPopulateDefaultAttributes()
     model->addField(Field(tr("Payload"), FieldType::eString));
 }
 
-void ProjectAttributesWizardPage::onPortNumberChanged()
-{
-    unsigned int port = ui->portNumberLineEdit->text().trimmed().toUInt();
-    if ( port > 0)
-        Project::instance()->setPortNumber(port);
-}
-
-void ProjectAttributesWizardPage::onIPAddressChanged()
-{
-    const QString ipAddressStr = ui->ipAddressLineEdit->text().trimmed();
-    QHostAddress ipAddress(ipAddressStr);
-    Project::instance()->setIpAddress(ipAddress);
-}
-
 bool ProjectAttributesWizardPage::isComplete() const
 {
     qDebug() << "field count: " << Project::instance()->fieldCount();
@@ -127,3 +108,5 @@ bool ProjectAttributesWizardPage::isComplete() const
             && Project::instance()->portNumber() > 0
             && (Project::instance()->ipAddress() != QHostAddress::Null);
 }
+
+} // ProjectManager

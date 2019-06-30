@@ -9,7 +9,10 @@ class QUdpSocket;
 class QAction;
 class SettingsDialog;
 class Configuration;
-class NewProjectWizard;
+
+namespace ProjectManager {
+class ProjectWizard;
+}
 
 namespace Ui {
 class MainWindow;
@@ -46,7 +49,7 @@ private:
     QAction *m_clearAction;
     QAction *m_loadConfigurationAction;
     Configuration *m_configuration;
-    NewProjectWizard *m_newProjectWizard;
+    ProjectManager::ProjectWizard *m_newProjectWizard;
 };
 
 #endif // MAINWINDOW_H

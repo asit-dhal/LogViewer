@@ -3,6 +3,8 @@
 
 #include <QWizardPage>
 
+namespace ProjectManager {
+
 namespace Ui {
 class NewProjecWizardPage;
 }
@@ -23,5 +25,7 @@ private:
     void selectProjectDir();
     Ui::NewProjecWizardPage *ui;
 };
+
+} // ProjectManager
 
 #endif // NEWPROJECWIZARDPAGE_H

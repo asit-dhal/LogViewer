@@ -1,5 +1,7 @@
 #include "fieldview.h"
 
+namespace ProjectManager {
+
 FieldView::FieldView(QWidget *parent) : QTableView (parent)
 {
 
@@ -24,3 +26,5 @@ void FieldView::onSlotMoveFirst()
 {
 
 }
+
+} // ProjectManager

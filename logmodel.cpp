@@ -11,6 +11,7 @@ void LogModel::addLogRecord(const LogRecord &record)
     endInsertRows();
 }
 
+
 void LogModel::bulkAddLogRecords(const QList<LogRecord> &records)
 {
     beginInsertRows(QModelIndex(), m_records.size(), m_records.size()+records.size()-1);

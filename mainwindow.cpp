@@ -4,10 +4,10 @@
 #include "searchlogmodel.h"
 #include "settingsdialog.h"
 #include "configuration.h"
-#include "newprojectwizard.h"
-#include "fieldmodel.h"
+#include "projectmanager/projectwizard.h"
+#include "projectmanager/fieldmodel.h"
 #include <QAbstractItemView>
-#include "project.h"
+#include "projectmanager/project.h"
 #include <QAction>
 #include <QUdpSocket>
 
@@ -18,10 +18,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    new Project(this);
-    new FieldModel(this);
+    new ProjectManager::Project(this);
+    new ProjectManager::FieldModel(this);
 
-    m_newProjectWizard = new NewProjectWizard(this);
+    m_newProjectWizard = new ProjectManager::ProjectWizard(this);
     m_logModel = new LogModel(this);
     m_searchLogModel = new SearchLogModel(this);
     m_settingsDialog = new SettingsDialog(this);

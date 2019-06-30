@@ -3,6 +3,8 @@
 
 #include <QString>
 
+namespace ProjectManager {
+
 enum class FieldType {
     eString = 0,
     eNumber,
@@ -20,5 +22,6 @@ struct Field {
     bool operator==(const Field &field) const;
 };
 
+} // ProjectManager
 
 #endif // FIELD_H
